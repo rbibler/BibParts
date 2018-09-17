@@ -1,0 +1,9 @@
+﻿@model IEnumerable<BibParts.Models.CategoryListViewItem>
+    @{
+        ViewBag.Title = "Home Page";
+    }
+
+    @foreach (var category in Model)
+    {
+        <div>@Html.ActionLink(category.CategoryName, "Details", "Categories", new { id = category.CategoryId }, null) (@category.PartsCount)</div>
+    }

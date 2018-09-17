@@ -1,0 +1,69 @@
+﻿@model IEnumerable<BibParts.Models.PartListViewItem>
+
+@{
+    ViewBag.Title = "Parts";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<div id="listholder">
+<table class="table">
+    <tr>
+        <th>
+            Part Name
+        </th>
+        <th>
+            Category
+        </th>
+        <th>
+            In Use
+        </th>
+        <th>
+            Total
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.PartItem.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CategoryName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumberInUse)
+        </td>
+        <td>
+            <a href="@Url.Action("RemoveInstance", "Parts", new { id = item.PartItem.Id })" class="fa fa-minus-circle"></a>
+            @Html.DisplayFor(modelItem => item.TotalNumber)
+            <a href="@Url.Action("AddInstance", "Parts", new { id = item.PartItem.Id })" class="fa fa-plus-circle"></a>
+        </td>
+        
+        <td>
+            <i class="fas fa-cog"></i>
+            <div id="myDropdown@(item.PartItem.Id)" class="dropdown-content">
+                <a href="#">Link 1</a>
+                <a href="#">Link 2</a>
+            </div>
+        </td>
+    </tr>
+}
+
+</table>
+</div>
+<script>
+    var theParent = document.getElementById("listholder");
+    theParent.addEventListener("click", doSomething, false);
+    function doSomething(e) {
+        if (e.target !== e.currentTarget) { 
+            var clickedItem = e.target.id;
+            console.log(clickedItem);
+            document.getElementById(clickedItem).classList.toggle("show");
+        }
+        e.stopPropagation();
+    }
+</script>
