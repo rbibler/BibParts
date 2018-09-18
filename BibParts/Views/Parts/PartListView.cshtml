@@ -1,0 +1,52 @@
+﻿@model IEnumerable<BibParts.Models.PartListViewItem>
+
+<div class="listView" data-bibpart-target="#partListTable">
+    <table id="partListTable" class="table">
+        <tr>
+            <th>
+                Part Name
+            </th>
+            <th>
+                Category
+            </th>
+            <th>
+                In Use
+            </th>
+            <th>
+                Total
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PartItem.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumberInUse)
+                </td>
+                <td>
+                    <div class="values">
+                        <i data-bp-partid="@(item.PartItem.Id)" data-bp-addremoveaction="remove" class="fa fa-minus-circle"></i>
+                        @Html.DisplayFor(modelItem => item.TotalNumber)
+                        <i data-bp-partid="@(item.PartItem.Id)" data-bp-addremoveaction="add" class="fa fa-plus-circle"></i>
+                    </div>
+                </td>
+
+                <td>
+
+                    <i class="fas fa-cog"></i>
+                    <div id="myDropdown@(item.PartItem.Id)" class="dropdown-content">
+                        <a href="#">Link 1</a>
+                        <a href="#">Link 2</a>
+                    </div>
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

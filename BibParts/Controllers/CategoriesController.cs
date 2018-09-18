@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -51,8 +53,16 @@ namespace BibParts.Controllers
             if (ModelState.IsValid)
             {
                 db.Categories.Add(category);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (DbUpdateException e)
+                {
+                    ModelState.AddModelError("Name", "A category of this name already exists!");
+                    return View(category);
+                }
+                return RedirectToAction("Index"); ;
             }
 
             return View(category);

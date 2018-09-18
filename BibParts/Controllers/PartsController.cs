@@ -13,21 +13,8 @@ namespace BibParts.Controllers
         BibPartDb _db = new BibPartDb(); 
         // GET: Parts
         public ActionResult Index()
-        { 
-
-            var model = from pi in _db.PartInstances
-                        group pi by pi.PartId into partInstances
-                        select new PartListViewItem
-                        {
-                            PartItem = _db.Parts.Where(p => p.Id == partInstances.Key).FirstOrDefault(),
-                            CategoryName = _db.Categories.Where(c => c.Id == (_db.Parts.Where(p => p.Id == partInstances.Key)
-                                                        .FirstOrDefault().CategoryId))
-                                                        .FirstOrDefault().Name,
-                            NumberInUse = partInstances.Where(pi => pi.InUse).Count(),
-                            TotalNumber = partInstances.Count()
-                        };
-
-            return View(model);
+        {
+            return GetPartsListView();
         }
 
         // GET: Parts/Details/5
@@ -110,23 +97,42 @@ namespace BibParts.Controllers
                 _db.PartInstances.Add(new PartInstance { PartId = id, InUse = false });
                 _db.SaveChanges();
             }
-            return RedirectToAction("Index");
+            return GetPartsListView();
         }
 
         [HttpGet]
         public ActionResult RemoveInstance(int id)
         {
-            //if (_db.Parts.Any(p => p.Id == id))
-            //{
                 var entityToRemove = _db.PartInstances.FirstOrDefault(pi => pi.PartId == id && pi.InUse == false);
                 if (entityToRemove != null)
                 {
                     _db.PartInstances.Remove(entityToRemove);
                     _db.SaveChanges();
                 }
-                
-            //}
-            return RedirectToAction("Index");
+
+            return GetPartsListView();
+        }
+
+        private ActionResult GetPartsListView()
+        {
+            var model = from pi in _db.PartInstances
+                        group pi by pi.PartId into partInstances
+                        select new PartListViewItem
+                        {
+                            PartItem = _db.Parts.Where(p => p.Id == partInstances.Key).FirstOrDefault(),
+                            CategoryName = _db.Categories.Where(c => c.Id == (_db.Parts.Where(p => p.Id == partInstances.Key)
+                                                        .FirstOrDefault().CategoryId))
+                                                        .FirstOrDefault().Name,
+                            NumberInUse = partInstances.Where(pi => pi.InUse).Count(),
+                            TotalNumber = partInstances.Count()
+                        };
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("PartListView", model);
+            }
+
+            return View(model);
         }
     }
 }
